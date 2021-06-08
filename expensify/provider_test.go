@@ -14,9 +14,9 @@ var testAccProvider *schema.Provider
 
 func init() {
 	file, err := os.Open("../credentials.json")
-    if err != nil {
-        log.Fatal(err)
-    }
+	if err != nil {
+		log.Fatal(err)
+	}
 	body, err := ioutil.ReadAll(file)
 	if err!=nil {
 		log.Fatal(err)

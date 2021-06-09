@@ -64,29 +64,28 @@ mkdir -p %APPDATA%/terraform.d/plugins/expensify.com/employee/expensify/1.0.0/wi
 
 ### Create User
 1. Add the `employee_email`, `manager_email`, `policy_id`, `first_name`, `last_name` in the respective field in `resource` block as shown in [example usage](#example-usage).
-2. For policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the link.<br>
+2. For policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the url.<br>
    ```For example in Policy url - "https://www.expensify.com/policy?param={policyID:22E95AFCD33ABE2BB8}", "22E95AFCD33ABE2BB8" is Policy ID```
 3. Run the basic terraform commands.<br>
 4. On successful execution, sends an account setup mail to user.<br>
 
 ### Update the user
-1. Update the data of the user in the `resource` block as show in Example Usage below and run the basic terraform commands to update user. 
-   User is not allowed to update `employee_email` and `policy_id`. 
-   Updating `first name` and `last name` in any one policy will atomatically update them in other policies.
+1. Update the data of the user in the `resource` block as show in [example usage](#example-usage) and run the basic terraform commands to update user. 
+   User is not allowed to update `employee_email` and `policy_id`.
 2. To remove a user from a policy set `is_terminated` field in `resource` block to `true` and vice versa to re-add.
 
 ### Read the User Data
-Add `data` and `output` blocks as shown in the Example Usage below and run the basic terraform commands.
+Add `data` and `output` blocks as shown in the [example usage](#example-usage) and run the basic terraform commands.
 
 ### Delete the user
 Delete the `resource` block of the user and run `terraform apply`.
 
 ### Import a User Data
-1. Write manually a `resource` configuration block for the user as shown in Example Usage below. Imported user will be mapped to this block.
+1. Write manually a `resource` configuration block for the user as shown in [example usage](#example-usage). Imported user will be mapped to this block.
 2. Run the command `terraform import expensify_employee.employee [POLICY_ID]:[EMAIL_ID]` to import user.
-3. For policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the link.<br>
+3. For policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the url.<br>
    ```For example in Policy url - "https://www.expensify.com/policy?param={policyID:22E95AFCD33ABE2BB8}", "22E95AFCD33ABE2BB8" is Policy ID```
-4. Run `terraform plan`, if output show `0 to addd, 0 to change and 0 to destroy` user import is successful, otherwise recheck the employee data in resource block with employee data in the policy in Expensify Website. 
+4. Run `terraform plan`, if output show `0 to addd, 0 to change and 0 to destroy` user import is successful, otherwise recheck the employee data in resource block with employee data in the policy in Expensify website. 
 
 
 ## Example Usage<a id="example-usage"></a>
@@ -107,25 +106,25 @@ provider "expensify" {
 }
 
 resource "expensify_employee" "employee"{
-    employee_email = "[EMPLOYEE_EMAIL]"
-    manager_email = "[MANAGER_EMAIL]"
-    policy_id = "[POLICY_ID]"
-    employee_id = "[EMPLOYEE_ID]"
-    first_name = "[FIRST_NAME]"
-    last_name = "[LAST_NAME]"
-    approves_to = "[APPROVES_TO]"
-    approval_limit = "[APPROVAL_LIMIT]"
-    over_limit_approver = "[OVER_LIMIT_APPROVER]"
+    employee_email = "employee@domain.com"
+    manager_email = "manager@domain.com"
+    policy_id = "22E95AFCD33ABE2BB8"
+    employee_id = "101"
+    first_name = "Dummy"
+    last_name = "Employee"
+    approves_to = "approver@domain.com"
+    approval_limit = 5
+    over_limit_approver = "overlimitapprover@domain.com"
     is_terminated = false
 }
 
-output "policy1"{
+output "resource_employee"{
     value = expensify_employee.employee
 }
 
 data "expensify_employee" "employee" {
-    policy_id = "[POLICY_ID]"
-    employee_email = "[EMPLOYEE_EMAIL]" 
+    policy_id = "22E95AFCD33ABE2BB8"
+    employee_email = "employee@domain.com" 
 }
 
 output "datasouce_employee"{
@@ -141,8 +140,8 @@ output "datasouce_employee"{
 * `employee_email`       - (Required, String)  - The email address of the employee.
 * `manager_email`        - (Required, String)  - Who the employee should submit reports to.
 * `policy_id`            - (Required, String)  - The id of policy for which employee is to be added.
-* `first_name`           - (Optional, String)  - First name of the employee in Expensify. Not allowed overwrite values manually set by the employee in their Expensify account.
-* `last_name`            - (Optional, String)  - Last name of the employee in Expensify. Not allowed overwrite values manually set by the employee in their Expensify account.
+* `first_name`           - (Optional, String)  - First name of the employee in Expensify. 
+* `last_name`            - (Optional, String)  - Last name of the employee in Expensify. 
 * `is_terminated`        - (Optional, Boolean) - If set to true, the employee will be removed from the policy.
 * `employee_id`          - (Optional, String)  - Unique ID of the Employee.
 * `over_limit_approver`  - (Optional, String)  - Who the manager should forward reports to if a report is over approval_limit. Required if an approval_limit is specified.
@@ -152,6 +151,7 @@ output "datasouce_employee"{
 
 ## Exceptions
 
-* Updating of the fields `manager email`, `approves to`, `over limit approver`, and `approval limit` is meaningful only if Approval Mode for policy is Advanced Approval.
-* Updating `first name` and `last name` in any one policy will atomatically update them in other policies.
-* To add an employee to multiple policies write multiple resource block with different policy ID.
+* Updating of the fields `manager_email`, `approves_to`, `over_limit_approver`, and `approval_limit` is meaningful only if Approval Mode for policy is Advanced Approval.
+* Updating `first_name` and `last_name` in any one policy will atomatically update them in other policies.
+* Not allowed to overwrite `first_name` and `last_name` values manually set by the employee in their Expensify account.
+* To add an employee to multiple policies write multiple `resource` block with different policy ID.

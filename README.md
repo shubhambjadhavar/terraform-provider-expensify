@@ -64,7 +64,7 @@ mkdir -p %APPDATA%/terraform.d/plugins/expensify.com/employee/expensify/1.0.0/wi
 
 ### Create User
 1. Add the `employee_email`, `manager_email`, `policy_id`, `first_name`, `last_name` in the respective field in `resource` block as shown in [example usage](#example-usage).
-2. For policy ID, refer [setup](#setup)
+2. Refer to [setup](#setup) for the policy ID.
 3. Run the basic terraform commands.<br>
 4. On successful execution, sends an account setup mail to user.<br>
 
@@ -82,7 +82,7 @@ Delete the `resource` block of the user and run `terraform apply`.
 ### Import a User Data
 1. Write manually a `resource` configuration block for the user as shown in [example usage](#example-usage). Imported user will be mapped to this block.
 2. Run the command `terraform import expensify_employee.employee [POLICY_ID]:[EMAIL_ID]` to import user.
-3. For policy ID, refer [setup](#setup)
+3. Refer to [setup](#setup) for the policy ID.
 4. Run `terraform plan`, if output show `0 to addd, 0 to change and 0 to destroy` user import is successful, otherwise recheck the employee data in `resource` block with employee data in the policy in Expensify website. 
 
 

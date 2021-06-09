@@ -14,7 +14,7 @@ This Terraform provider enables create, read, update, delete, and import operati
 1. Create an expensify account at https://www.expensify.com/<br>
 2. Sign in to the expensify account.<br>
 3. To create a policy, go to `Settings -> Policies -> Group -> click on New Policy`.<br>
-4. After creating the policy, for policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the link.
+4. After creating the policy, for policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the link.<br>
    Example: Link of a Polciy - https://www.expensify.com/policy?param={%22policyID%22:%22E95AFCD33ABE2BB8%22}
 
 ### API Authentication
@@ -66,7 +66,7 @@ mkdir -p %APPDATA%/terraform.d/plugins/expensify.com/employee/expensify/1.0.0/wi
 
 #### Create User
 1. Add the employee emial, manager emial, policy id, first name, last name in the respective field in resource block as shown in Example Usage below.
-2. For policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the link.
+2. For policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the link.<br>
    Example: Link of a Polciy - https://www.expensify.com/policy?param={%22policyID%22:%22E95AFCD33ABE2BB8%22}
 3. Run the basic terraform commands.
 4. On successful execution, creates a user and sends an account setup mail to the user.
@@ -86,7 +86,7 @@ Delete the resource block of the particular user and run `terraform apply`.
 #### Import a User Data
 1. Write manually a resource configuration block for the User as shown in Example Usage below. Imported user will be mapped to this block.
 2. Run the command `terraform import expensify_employee.employee [POLICY_ID]:[EMAIL_ID]` to import user.
-3. For policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the link.
+3. For policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the link.<br>
    Example: Link of a Polciy - https://www.expensify.com/policy?param={%22policyID%22:%22E95AFCD33ABE2BB8%22}
 4. Run `terraform plan`, if output show `0 to addd, 0 to change and 0 to destroy` user import is successful, otherwise recheck the employee data in resource block with employee data in the policy in Expensify Website. 
 

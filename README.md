@@ -88,7 +88,7 @@ Delete the `resource` block of the user and run `terraform apply`.
 
 ## Example Usage<a id="example-usage"></a>
 
-```terraform
+```
 terraform{
     required_providers {
         expensify = {
@@ -99,7 +99,7 @@ terraform{
 }
 
 provider "expensify" {
-    partner_user_id = "aa_admin_domain_com"
+    partner_user_id = "_REPLACE_PARTNER_USER_ID_"
     partner_user_secret = "_REPLACE_PARTNER_USER_SECRET_" 
 }
 

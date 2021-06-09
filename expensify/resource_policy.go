@@ -9,7 +9,7 @@ import (
 	"terraform-provider-expensify/client"
 )
 
-func validatePlan(v interface{}, k string) (ws []string, es []error) {
+func validatePlan(v interface{}, k string) (warns []string, errs []error) {
 	value := v.(string)
 	plans := []string{"team","corporate"} 
 	for _, t := range plans{
@@ -17,7 +17,7 @@ func validatePlan(v interface{}, k string) (ws []string, es []error) {
 			return
 		}
 	}
-	es = append(es, fmt.Errorf("%q must be either \"team\" or \"corporate\"", k))
+	errs = append(errs, fmt.Errorf("%q must be either \"team\" or \"corporate\"", k))
 	return
 }
 

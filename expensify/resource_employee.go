@@ -10,12 +10,12 @@ import (
 	"terraform-provider-expensify/client"
 )
 
-func validateEmail(v interface{}, k string) (ws []string, es []error) {
+func validateEmail(v interface{}, k string) (warns []string, errs []error) {
 	value := v.(string)
 	var emailRegex = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
 	if !(emailRegex.MatchString(value)) {
-		es = append(es, fmt.Errorf("Expected EmailId is not valid %s", k))
-		return ws, es
+		errs = append(errs, fmt.Errorf("Expected EmailId is not valid %s", k))
+		return warns, errs
 	}
 	return
 }

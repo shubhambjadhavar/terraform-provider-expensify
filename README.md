@@ -5,16 +5,16 @@ This Terraform provider enables create, read, update, delete, and import operati
 
 * [Go](https://golang.org/doc/install) >= 1.16 (To build the provider plugin)<br>
 * [Terraform](https://www.terraform.io/downloads.html) >= 0.13.x <br/>
-* Application: [Expensify](https://www.expensify.com/) (API is supported in collect and control plans)
+* Application: [Expensify](https://www.expensify.com/) (API is supported in collect and control policy plans)
 
 
 ## Application Account
 
-### Setup
+### Setup<a id="setup"></a>
 1. Create an expensify account at https://www.expensify.com/<br>
 2. To create a policy, go to `Settings -> Policies -> Group -> click on New Policy`.<br>
 3. After creating the policy, for policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the URL.<br>
-   ```For example in Policy url - "https://www.expensify.com/policy?param={policyID:22E95AFCD33ABE2BB8}", "22E95AFCD33ABE2BB8" is Policy ID```
+   ```For example, in Policy url - "https://www.expensify.com/policy?param={policyID:22E95AFCD33ABE2BB8}", "22E95AFCD33ABE2BB8" is Policy ID```
 
 ### API Authentication
 1. To authenticate API, we need a pair of credentials: partnerUserID and partnerUserSecret.<br>
@@ -33,7 +33,7 @@ go mod vendor
 
 ## Managing terraform plugins
 *For Windows:*
-1. Run the following command to create a vendor subdirectory (`%APPDATA%/terraform.d/plugins/${host_name}/${namespace}/${type}/${version}/${OS_ARCH}`) which will consist of all terraform plugins. <br> 
+1. Run the following command to create a vendor sub-directory (`%APPDATA%/terraform.d/plugins/${host_name}/${namespace}/${type}/${version}/${OS_ARCH}`) which will consist of all terraform plugins. <br> 
 Command: 
 ```bash
 mkdir -p %APPDATA%/terraform.d/plugins/expensify.com/employee/expensify/1.0.0/windows_amd64
@@ -64,8 +64,7 @@ mkdir -p %APPDATA%/terraform.d/plugins/expensify.com/employee/expensify/1.0.0/wi
 
 ### Create User
 1. Add the `employee_email`, `manager_email`, `policy_id`, `first_name`, `last_name` in the respective field in `resource` block as shown in [example usage](#example-usage).
-2. For policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the URL.<br>
-   ```For example in Policy url - "https://www.expensify.com/policy?param={policyID:22E95AFCD33ABE2BB8}", "22E95AFCD33ABE2BB8" is Policy ID```
+2. For policy ID, refer [setup](#setup)
 3. Run the basic terraform commands.<br>
 4. On successful execution, sends an account setup mail to user.<br>
 
@@ -83,9 +82,8 @@ Delete the `resource` block of the user and run `terraform apply`.
 ### Import a User Data
 1. Write manually a `resource` configuration block for the user as shown in [example usage](#example-usage). Imported user will be mapped to this block.
 2. Run the command `terraform import expensify_employee.employee [POLICY_ID]:[EMAIL_ID]` to import user.
-3. For policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the URL.<br>
-   ```For example in Policy url - "https://www.expensify.com/policy?param={policyID:22E95AFCD33ABE2BB8}", "22E95AFCD33ABE2BB8" is Policy ID```
-4. Run `terraform plan`, if output show `0 to addd, 0 to change and 0 to destroy` user import is successful, otherwise recheck the employee data in resource block with employee data in the policy in Expensify website. 
+3. For policy ID, refer [setup](#setup)
+4. Run `terraform plan`, if output show `0 to addd, 0 to change and 0 to destroy` user import is successful, otherwise recheck the employee data in `resource` block with employee data in the policy in Expensify website. 
 
 
 ## Example Usage<a id="example-usage"></a>
@@ -101,8 +99,8 @@ terraform{
 }
 
 provider "expensify" {
-    partner_user_id = ""
-    partner_user_secret = "" 
+    partner_user_id = "aa_admin_domain_com"
+    partner_user_secret = "_REPLACE_PARTNER_USER_SECRET_" 
 }
 
 resource "expensify_employee" "employee"{
@@ -135,18 +133,18 @@ output "datasouce_employee"{
 
 ## Argument Reference
 
-* `partner_user_id`      - (Required, String)  - The Expensify Partner User ID
-* `partner_user_secret`  - (Required, String)  - The Expensify Partner User Secret
-* `employee_email`       - (Required, String)  - The email address of the employee.
-* `manager_email`        - (Required, String)  - Who the employee should submit reports to.
-* `policy_id`            - (Required, String)  - The ID of policy for which employee is to be added.
-* `first_name`           - (Optional, String)  - First name of the employee in Expensify. 
-* `last_name`            - (Optional, String)  - Last name of the employee in Expensify. 
-* `is_terminated`        - (Optional, Boolean) - If set to true, the employee will be removed from the policy.
-* `employee_id`          - (Optional, String)  - Unique ID of the Employee.
-* `over_limit_approver`  - (Optional, String)  - Who the manager should forward reports to if a report is over approval_limit. Required if an approval_limit is specified.
-* `approver_limit`       - (Optional, Float)   - Specifies limit of report total.
-* `approves_to`          - (Optional, String)  - Who the employee should forward the report to.
+* `partner_user_id` (Required, String)  - The Expensify Partner User ID
+* `partner_user_secret` (Required, String)  - The Expensify Partner User Secret
+* `employee_email` (Required, String)  - The email address of the employee.
+* `manager_email` (Required, String)  - Who the employee should submit reports to.
+* `policy_id` (Required, String)  - The ID of policy for which employee is to be added.
+* `first_name` (Optional, String)  - First name of the employee in Expensify. 
+* `last_name` (Optional, String)  - Last name of the employee in Expensify. 
+* `is_terminated` (Optional, Boolean) - If set to true, the employee will be removed from the policy.
+* `employee_id` (Optional, String)  - Unique ID of the Employee.
+* `over_limit_approver` (Optional, String)  - Who the manager should forward reports to if a report is over approval_limit. Required if an approval_limit is specified.
+* `approver_limit` (Optional, Float)   - Specifies limit of report total.
+* `approves_to` (Optional, String)  - Who the employee should forward the report to.
 
 
 ## Exceptions

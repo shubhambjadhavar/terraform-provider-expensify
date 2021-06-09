@@ -153,6 +153,6 @@ output "datasouce_employee"{
 
 ## Exceptions
 
-* Updating of the fields `manager emial`, `approves to`, `over limit approver`, and `approval limit` is meaningful only if Approval Mode for policy is Advanced Approval.
+* Updating of the fields `manager email`, `approves to`, `over limit approver`, and `approval limit` is meaningful only if Approval Mode for policy is Advanced Approval.
 * Updating `first name` and `last name` in any one policy will atomatically update them in other policies.
 * To add an employee to multiple policies write multiple resource block with different policy ID.

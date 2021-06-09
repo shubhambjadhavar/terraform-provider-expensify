@@ -15,7 +15,7 @@ This Terraform provider enables create, read, update, delete, and import operati
 2. Sign in to the expensify account.<br>
 3. To create a policy, go to `Settings -> Policies -> Group -> click on New Policy`.<br>
 4. After creating the policy, for policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the link.<br>
-   Example: Link of a Polciy - https://www.expensify.com/policy?param={%22policyID%22:%22E95AFCD33ABE2BB8%22}
+   Example: Link of a Policy - https://www.expensify.com/policy?param={%22policyID%22:%22E95AFCD33ABE2BB8%22}
 
 ### API Authentication
 1. To authenticate API we need a pair of credentials: partnerUserID and partnerUserSecret.<br>

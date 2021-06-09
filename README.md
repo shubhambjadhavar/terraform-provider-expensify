@@ -142,7 +142,7 @@ output "datasouce_employee"{
 * `last_name` (Optional, String)  - Last name of the employee in Expensify. 
 * `is_terminated` (Optional, Boolean) - If set to true, the employee will be removed from the policy.
 * `employee_id` (Optional, String)  - Unique ID of the Employee.
-* `over_limit_approver` (Optional, String)  - Who the manager should forward reports to if a report is over approval_limit. Required if an approval_limit is specified.
+* `over_limit_approver` (Optional, String)  - Who the manager should forward reports to if a report is over approval_limit. Required if an `approval_limit` is specified.
 * `approver_limit` (Optional, Float)   - Specifies limit of report total.
 * `approves_to` (Optional, String)  - Who the employee should forward the report to.
 

@@ -5,17 +5,16 @@ This Terraform provider enables create, read, update, delete, and import operati
 
 * [Go](https://golang.org/doc/install) >= 1.16 (To build the provider plugin)<br>
 * [Terraform](https://www.terraform.io/downloads.html) >= 0.13.x <br/>
-* Application: [Expensify](https://www.expensify.com/) (API support in policies with collect or control plans)
+* Application: [Expensify](https://www.expensify.com/) (API is supported in collect and control plans)
 
 
 ## Application Account
 
 ### Setup
 1. Create an expensify account at https://www.expensify.com/<br>
-2. Sign in to the expensify account.<br>
-3. To create a policy, go to `Settings -> Policies -> Group -> click on New Policy`.<br>
-4. After creating the policy, for policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the link.<br>
-   Example: Link of a Policy - https://www.expensify.com/policy?param={%22policyID%22:%22E95AFCD33ABE2BB8%22}
+2. To create a policy, go to `Settings -> Policies -> Group -> click on New Policy`.<br>
+3. After creating the policy, for policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the url.<br>
+   ```For example in Policy url - "https://www.expensify.com/policy?param={policyID:22E95AFCD33ABE2BB8}", "22E95AFCD33ABE2BB8" is Policy ID```
 
 ### API Authentication
 1. To authenticate API we need a pair of credentials: partnerUserID and partnerUserSecret.<br>
@@ -24,14 +23,13 @@ This Terraform provider enables create, read, update, delete, and import operati
 
 
 ## Building The Provider
-1. Clone the repository and add the dependencies. For this run the following commands: <br>
-```git clone https://github.com/shubhambjadhavar/terraform-provider-expensify.git
+1. Clone the repository, add all the dependencies and create a vendor directory that contains all dependencies. For this run the following commands: <br>
+```
 cd terraform-provider-expensify
 go mod init terraform-provider-expensify
 go mod tidy
+go mod vendor
 ```
-2. Run `go mod vendor` to create a vendor directory that contains all the provider's dependencies. <br>
-
 
 ## Managing terraform plugins
 *For Windows:*
@@ -55,43 +53,44 @@ mkdir -p %APPDATA%/terraform.d/plugins/expensify.com/employee/expensify/1.0.0/wi
 ## Working with terraform
 
 ### Application Credential Integration in terraform
-1. Add terraform block and provider block as shown in Example Usage below.
+1. Add `terraform` block and `provider` block as shown in [example usage](#example-usage).
 2. Get a pair of credentials: partnerUserID and partnerUserSecret. For this visit https://www.expensify.com/tools/integrations/.
-3. Assign the above credentials to the repective field in the provider block.
+3. Assign the above credentials to the repective field in the `provider` block.
 
 ### Basic Terraform Commands
 1. `terraform init` - To initialize a working directory containing Terraform configuration files.
 2. `terraform plan` - To create an execution plan. Displays the changes to be done.
 3. `terraform apply` - To execute the actions proposed in a Terraform plan. Apply the chages.
 
-#### Create User
-1. Add the employee emial, manager emial, policy id, first name, last name in the respective field in resource block as shown in Example Usage below.
+### Create User
+1. Add the `employee_email`, `manager_email`, `policy_id`, `first_name`, `last_name` in the respective field in `resource` block as shown in [example usage](#example-usage).
 2. For policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the link.<br>
-   Example: Link of a Polciy - https://www.expensify.com/policy?param={%22policyID%22:%22E95AFCD33ABE2BB8%22}
-3. Run the basic terraform commands.
-4. On successful execution, creates a user and sends an account setup mail to the user.
-5. Setup the account using the link provided in the mail.
+   ```For example in Policy url - "https://www.expensify.com/policy?param={policyID:22E95AFCD33ABE2BB8}", "22E95AFCD33ABE2BB8" is Policy ID```
+3. Run the basic terraform commands.<br>
+4. On successful execution, sends an account setup mail to user.<br>
 
-#### Update the user
-1. Update the data of the user in the resource block as show in Example Usage below and run the basic terraform commands to update user. User is allowed to update `employee_id`, `first_name`, `last_name`, `manager_email`, `approves to`, `over limit approver`, and `approval limit`. Updating `first name` and `last name` in any one policy will atomatically update them in other policies.
-2. To remove a user from a policy update value of `is_terminated` field in resource block to `true`.
-3. To readd the removed user the policy update value of `is_terminated` field in resource block back to `false`.
+### Update the user
+1. Update the data of the user in the `resource` block as show in Example Usage below and run the basic terraform commands to update user. 
+   User is not allowed to update `employee_email` and `policy_id`. 
+   Updating `first name` and `last name` in any one policy will atomatically update them in other policies.
+2. To remove a user from a policy set `is_terminated` field in `resource` block to `true` and vice versa to re-add.
 
-#### Read the User Data
-Add data and output blocks as shown in the Example Usage below and run the basic terraform commands.
+### Read the User Data
+Add `data` and `output` blocks as shown in the Example Usage below and run the basic terraform commands.
 
-#### Delete the user
-Delete the resource block of the particular user and run `terraform apply`.
+### Delete the user
+Delete the `resource` block of the user and run `terraform apply`.
 
-#### Import a User Data
-1. Write manually a resource configuration block for the User as shown in Example Usage below. Imported user will be mapped to this block.
+### Import a User Data
+1. Write manually a `resource` configuration block for the user as shown in Example Usage below. Imported user will be mapped to this block.
 2. Run the command `terraform import expensify_employee.employee [POLICY_ID]:[EMAIL_ID]` to import user.
 3. For policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the link.<br>
-   Example: Link of a Polciy - https://www.expensify.com/policy?param={%22policyID%22:%22E95AFCD33ABE2BB8%22}
+   ```For example in Policy url - "https://www.expensify.com/policy?param={policyID:22E95AFCD33ABE2BB8}", "22E95AFCD33ABE2BB8" is Policy ID```
 4. Run `terraform plan`, if output show `0 to addd, 0 to change and 0 to destroy` user import is successful, otherwise recheck the employee data in resource block with employee data in the policy in Expensify Website. 
 
 
-## Example Usage
+## Example Usage<a id="example-usage"></a>
+
 ```terraform
 terraform{
     required_providers {

@@ -83,7 +83,7 @@ Delete the `resource` block of the user and run `terraform apply`.
 1. Write manually a `resource` configuration block for the user as shown in [example usage](#example-usage). Imported user will be mapped to this block.
 2. Run the command `terraform import expensify_employee.employee [POLICY_ID]:[EMAIL_ID]` to import user.
 3. Refer to [setup](#setup) for the policy ID.
-4. Run `terraform plan`, if output show `0 to addd, 0 to change and 0 to destroy` user import is successful, otherwise recheck the employee data in `resource` block with employee data in the policy in Expensify website. 
+4. Run `terraform plan`, if output shows `0 to addd, 0 to change and 0 to destroy` user import is successful, otherwise recheck the employee data in `resource` block with employee data in the policy in Expensify website. 
 
 
 ## Example Usage<a id="example-usage"></a>
@@ -133,18 +133,18 @@ output "datasouce_employee"{
 
 ## Argument Reference
 
-* `partner_user_id` (Required, String)  - The Expensify Partner User ID
-* `partner_user_secret` (Required, String)  - The Expensify Partner User Secret
-* `employee_email` (Required, String)  - The email address of the employee.
-* `manager_email` (Required, String)  - Who the employee should submit reports to.
-* `policy_id` (Required, String)  - The ID of policy for which employee is to be added.
-* `first_name` (Optional, String)  - First name of the employee in Expensify. 
-* `last_name` (Optional, String)  - Last name of the employee in Expensify. 
+* `partner_user_id` (Required, String) - The Expensify Partner User ID
+* `partner_user_secret` (Required, String) - The Expensify Partner User Secret
+* `employee_email` (Required, String) - The email address of the employee.
+* `manager_email` (Required, String) - Who the employee should submit reports to.
+* `policy_id` (Required, String) - The ID of policy for which employee is to be added.
+* `first_name` (Optional, String) - First name of the employee in Expensify. 
+* `last_name` (Optional, String) - Last name of the employee in Expensify. 
 * `is_terminated` (Optional, Boolean) - If set to true, the employee will be removed from the policy.
-* `employee_id` (Optional, String)  - Unique ID of the Employee.
-* `over_limit_approver` (Optional, String)  - Who the manager should forward reports to if a report is over approval_limit. Required if an `approval_limit` is specified.
-* `approver_limit` (Optional, Float)   - Specifies limit of report total.
-* `approves_to` (Optional, String)  - Who the employee should forward the report to.
+* `employee_id` (Optional, String) - Unique ID of the Employee.
+* `over_limit_approver` (Optional, String) - Who the manager should forward reports to if a report is over approval_limit. Required if an `approval_limit` is specified.
+* `approver_limit` (Optional, Float) - Specifies limit of report total.
+* `approves_to` (Optional, String) - Who the employee should forward the report to.
 
 
 ## Exceptions

@@ -6,6 +6,7 @@ This Terraform provider enables create, read, update, delete, and import operati
 * [Go](https://golang.org/doc/install) >= 1.16 (To build the provider plugin)<br>
 * [Terraform](https://www.terraform.io/downloads.html) >= 0.13.x <br/>
 * Application: [Expensify](https://www.expensify.com/) (API is supported in collect and control policy plans)
+* [API Documentation](https://integrations.expensify.com/Integration-Server/doc/employeeUpdater.html)
 
 
 ## Application Account
@@ -14,7 +15,7 @@ This Terraform provider enables create, read, update, delete, and import operati
 1. Create an expensify account at https://www.expensify.com/<br>
 2. To create a policy, go to `Settings -> Policies -> Group -> click on New Policy`.<br>
 3. After creating the policy, for policy ID, go to `Settings -> Policies -> Group -> Select the appropriate policy` and note the policy ID from the URL.<br>
-   ```For example, in Policy url - "https://www.expensify.com/policy?param={policyID:22E95AFCD33ABE2BB8}", "22E95AFCD33ABE2BB8" is Policy ID```
+   For example, in Policy url - ```"https://www.expensify.com/policy?param={policyID:22E95AFCD33ABE2BB8}", "22E95AFCD33ABE2BB8" is Policy ID```
 
 ### API Authentication
 1. To authenticate API, we need a pair of credentials: partnerUserID and partnerUserSecret.<br>
@@ -136,15 +137,15 @@ output "datasouce_employee"{
 * `partner_user_id` (Required, String) - The Expensify Partner User ID
 * `partner_user_secret` (Required, String) - The Expensify Partner User Secret
 * `employee_email` (Required, String) - The email address of the employee.
-* `manager_email` (Required, String) - Who the employee should submit reports to.
+* `manager_email` (Required, String) - Manager email address.
 * `policy_id` (Required, String) - The ID of policy for which employee is to be added.
 * `first_name` (Optional, String) - First name of the employee in Expensify. 
 * `last_name` (Optional, String) - Last name of the employee in Expensify. 
 * `is_terminated` (Optional, Boolean) - If set to true, the employee will be removed from the policy.
 * `employee_id` (Optional, String) - Unique ID of the Employee.
-* `over_limit_approver` (Optional, String) - Who the manager should forward reports to if a report is over approval_limit. Required if an `approval_limit` is specified.
-* `approver_limit` (Optional, Float) - Specifies limit of report total.
-* `approves_to` (Optional, String) - Who the employee should forward the report to.
+* `over_limit_approver` (Optional, String) - over limit approver email address. Required if an `approval_limit` is specified.
+* `approval_limit` (Optional, Float) - Specifies limit of report total.
+* `approves_to` (Optional, String) - approver email address.
 
 
 ## Exceptions

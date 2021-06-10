@@ -134,8 +134,8 @@ output "datasouce_employee"{
 
 ## Argument Reference
 
-* `partner_user_id` (Required, String) - The Expensify Partner User ID
-* `partner_user_secret` (Required, String) - The Expensify Partner User Secret
+* `partner_user_id` (Optional, String) - The Expensify Partner User ID. This may also be set via the "PARTNER_USER_ID" environment variable.
+* `partner_user_secret` (Optional, String) - The Expensify Partner User Secret. This may also be set via the "PARTNER_USER_SECRET" environment variable.
 * `employee_email` (Required, String) - The email address of the employee.
 * `manager_email` (Required, String) - Manager email address.
 * `policy_id` (Required, String) - The ID of policy for which employee is to be added.

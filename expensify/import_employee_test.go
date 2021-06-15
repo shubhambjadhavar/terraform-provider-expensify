@@ -30,7 +30,7 @@ func testAccCheckExpensifyEmployeeResourceImporterBasic() string {
 	resource "expensify_employee" "employee" {
 		employee_email = "abhishiek@clevertapdemo.ml"
     	        manager_email = "shubham@clevertapdemo.ml"
-    	        policy_id = "E95AFCD33ABE2BB8"
+    	        policy_id = "56B042862350ADD2"
     	        employee_id = "1003"
 	}`)
 }

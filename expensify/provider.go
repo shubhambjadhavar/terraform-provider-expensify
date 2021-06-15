@@ -27,6 +27,7 @@ func Provider() *schema.Provider {
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"expensify_employee": dataSourceEmployee(),
+			"expensify_policy": dataSourcePolicy(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}

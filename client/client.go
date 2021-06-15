@@ -41,66 +41,12 @@ type InputSettings struct{
 	Plan string `json:"plan,omitempty"`
 }
 
-type Categories struct{
-	Action string `json:"action"`
-	DataArray []CategoriesData `json:"data"`
-}
-
-type CategoriesData struct{
-	Name string `json:"name"`
-	Type string `json:"type"`
-	Enabled bool `json:"enabled"`
-	GlCode string `json:"glCode"`
-	PayrollCode string `json:"payrollCode"`
-	AreCommentsRequired bool `json:"areCommentsRequired"`
-	CommentHint string `json:"commentHint"`
-	MaxExpenseAmount int `json:"maxExpenseAmount"`
-}
-
-type ReportFields struct{
-	Action string `json:"action"`
-	DataArray []ReportFieldsData `json:"data"`
-}
-
-type ReportFieldsData struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
-	DefaultValue string `json:"defaultValue"`
-	ValuesArray []Values `json:"values"`
-}
-
-type Values struct{
-	Value string `json:"value"`
-	Enabled bool `json:"enabed"`
-	ExternalId string `json:"externalID"`
-}
-
-type Tags struct{
-	Source string `json:"source"`
-	DataArray []TagsData `json:"data"`
-}
-
-type TagsData struct{
-	Name string `json:"name"`
-	SetRequired bool `json:"setRequired"`
-	TagArray []Tag `json:"tags"`	
-}
-
-type Tag struct{
-	Name string `json:"name"`
-	Enabled bool `json:"enabled"`
-	GlCode string `json:"glCode"`
-}
-
 type RequestJobDescription struct{
 	Type string `json:"type"`
 	DryRun bool `json:"dry-run,omitempty"`
 	Credential Credentials `json:"credentials"`
 	DataSource string `json:"dataSource,omitempty"`
 	InputSetting InputSettings `json:"inputSettings"`
-	Category Categories `json:"categories,omitempty"`
-	ReportField ReportFields `json:"reportField,omitempty"`
-	TagArray Tags `json:"tags,omitempty"`
 }
 
 type Response struct{
@@ -353,62 +299,6 @@ func (c *Client) UpdateEmployee(employeesList *EmployeesList) error {
 	return nil
 }
 
-func (c *Client) ActivateEmployee(employeesList *EmployeesList) error {
-	credentials := Credentials{
-		PartnerUserId: c.partnerUserId,
-		PartnerUserSecret: c.partnerUserSecret,
-	}
-	inputSettings := InputSettings{
-		Type: "employees",
-		Entity: "generic",
-	}
-	requestJobDescription := RequestJobDescription{
-		Type: "update",
-		DryRun: false,
-		Credential: credentials,
-		DataSource: "request",
-		InputSetting: inputSettings,
-	}
-	employeesListMarshal, err := json.Marshal(employeesList)
-	if err != nil {
-		log.Println("[ACTIVATE ERROR]:", err)
-		return err
-	}
-	requestJobDescriptionMarshal, err := json.Marshal(requestJobDescription)
-	if err != nil {
-		log.Println("[ACTIVATE ERROR]:", err)
-		return err
-	}
-	parms := url.Values{}
-	parms.Add("requestJobDescription", string(requestJobDescriptionMarshal))
-	parms.Add("data", string(employeesListMarshal))
-	body := strings.NewReader(parms.Encode())
-	res, err := c.httpRequest("POST", body)
-	if err != nil {
-		log.Println("[ACTIVATE ERROR]:", err)
-		return err
-	}
-	resp := Response{}
-	err = json.Unmarshal(res, &resp)
-	if err != nil {
-		log.Println("[ACTIVATE ERROR]:", err)
-		return err
-	}
-	if resp.ResponseCode!=200{
-		log.Println("[ACTIVATE ERROR]:", fmt.Errorf(string(res)))
-		return fmt.Errorf(string(res))
-	}
-	if resp.UpdatedEmployeesCount!=1{
-		err := ""
-		for _,v := range(resp.SkippedEmployees){
-			err = err + v.Reason
-		}
-		log.Println("[ACTIVATE ERROR]:", err)
-		return fmt.Errorf(err)
-	}
-	return nil
-}
-
 func (c *Client) DeleteEmployee(employeesList *EmployeesList) error {
 	credentials := Credentials{
 		PartnerUserId: c.partnerUserId,
@@ -558,49 +448,6 @@ func (c *Client) GetPolicy(policyId string) (*Policy, error){
 		}
 	}
 	return nil, fmt.Errorf("policy does not exist")
-}
-
-func (c *Client) UpdatePolicy(policyId string, categories Categories, reportField ReportFields, tags Tags) (error){
-	credentials := Credentials{
-		PartnerUserId: c.partnerUserId,
-		PartnerUserSecret: c.partnerUserSecret,
-	}
-	inputSettings := InputSettings{
-		Type: "policy",
-		PolicyIdList: []string{policyId,},
-	}
-	requestJobDescription := RequestJobDescription{
-		Type: "update",
-		Credential: credentials,
-		InputSetting: inputSettings,
-		TagArray: tags,
-		Category: categories,
-		ReportField: reportField,
-	}
-	requestJobDescriptionMarshal, err := json.Marshal(requestJobDescription)
-	if err != nil {
-		log.Println("[UPDATE ERROR]:", err)
-		return err
-	}
-	parms := url.Values{}
-	parms.Add("requestJobDescription", string(requestJobDescriptionMarshal))
-	body := strings.NewReader(parms.Encode())
-	res, err := c.httpRequest("POST", body)
-	if err != nil {
-		log.Println("[UPDATE ERROR]:", err)
-		return err
-	}
-	resp := Response{}
-	err = json.Unmarshal(res, &resp)
-	if err != nil {
-		log.Println("[UPDATE ERROR]:", err)
-		return err
-	}
-	if resp.ResponseCode!=200{
-		log.Println("[UPDATE ERROR]:", fmt.Errorf(string(res)))
-		return fmt.Errorf(string(res))
-	}
-	return nil
 }
 
 func (c *Client) httpRequest(method string, body *strings.Reader) ([]byte, error) {

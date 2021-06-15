@@ -16,9 +16,9 @@ func TestAccExpensifyEmployeeDataSource_basic(t *testing.T) {
 			{
 				Config: testAccExpensifyEmployeeDataSourceConfig(),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.expensify_employee.employee", "employee_email", "shubham@clevertapdemo.ml"),
-					resource.TestCheckResourceAttr("data.expensify_employee.employee", "policy_id", "E95AFCD33ABE2BB8"),
-					resource.TestCheckResourceAttr("data.expensify_employee.employee", "manager_email", "shubham@clevertapdemo.ml"),
+					resource.TestCheckResourceAttr("data.expensify_employee.employee", "employee_email", "shubhamj@clevertapdemo.ml"),
+					resource.TestCheckResourceAttr("data.expensify_employee.employee", "policy_id", "56B042862350ADD2"),
+					resource.TestCheckResourceAttr("data.expensify_employee.employee", "manager_email", "shubhamj@clevertapdemo.ml"),
 					resource.TestCheckResourceAttr("data.expensify_employee.employee", "role", "admin"),
 				),
 			},
@@ -29,7 +29,7 @@ func TestAccExpensifyEmployeeDataSource_basic(t *testing.T) {
 func testAccExpensifyEmployeeDataSourceConfig() string {
 	return fmt.Sprintf(`
 	data "expensify_employee" "employee" {
-		policy_id = "E95AFCD33ABE2BB8"
-    	        employee_email = "shubham@clevertapdemo.ml"
+		policy_id = "56B042862350ADD2"
+    	        employee_email = "shubhamj@clevertapdemo.ml"
 	}`)
 }

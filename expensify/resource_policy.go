@@ -25,15 +25,15 @@ func resourcePolicy() *schema.Resource{
 	return &schema.Resource{
 		CreateContext: resourcePolicyCreate,
 		ReadContext:   resourcePolicyRead,
-		UpdateContext: resourcePolicyUpdate,
 		DeleteContext: resourcePolicyDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: resourcePolicyImporter,
 		},
 		Schema: map[string]*schema.Schema{
 			"policy_name":  &schema.Schema{
 				Type: schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"policy_id": &schema.Schema{
 				Type: schema.TypeString,
@@ -43,6 +43,7 @@ func resourcePolicy() *schema.Resource{
 				Type: schema.TypeString,
 				Optional: true,
 				Default: "team",
+				ForceNew: true,
 				ValidateFunc: validatePlan,
 			},
 			"owner": &schema.Schema{
@@ -80,7 +81,7 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 			d.SetId("")
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Warning,
-				Summary:  "Policy does not exist. Creating a new policy with given details.",
+				Summary:  "Policy does not exist. Create a new policy with given details.",
 			})
 			return diags
 		}
@@ -94,13 +95,23 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 	return diags
 }
 
-func resourcePolicyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
-	var diags diag.Diagnostics
-	return diags
-}
-
 func resourcePolicyDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
 	var diags diag.Diagnostics
 	d.SetId("")
 	return diags
+}
+
+func resourcePolicyImporter(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+	apiClient := m.(*client.Client)
+	policyId := d.Id()
+	policy, err := apiClient.GetPolicy(policyId)
+	if err != nil {
+		return nil, err
+	}
+	d.Set("owner", policy.Owner)
+	d.Set("policy_id", policy.PolicyId)
+	d.Set("policy_name", policy.PolicyName)
+	d.Set("plan", policy.Plan)
+	d.Set("output_currency", policy.OutputCurrency)
+	return []*schema.ResourceData{d}, nil
 }

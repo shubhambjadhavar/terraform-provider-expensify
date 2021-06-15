@@ -39,7 +39,7 @@ func TestExpensifyClient_NewEmployee(t *testing.T) {
 			employeesList: &EmployeesList{
 				Employees: []Employee{
 					{
-						PolicyId: "E95AFCD33ABE2BB8",
+						PolicyId: "56B042862350ADD2",
 						EmployeeEmail: "abhishiek@clevertapdemo.ml",
 						ManagerEmail: "shubham@clevertapdemo.ml",
 						EmployeeId: "1003",
@@ -49,7 +49,7 @@ func TestExpensifyClient_NewEmployee(t *testing.T) {
 				},
 			},
 			employee: &Employee{
-				PolicyId: "E95AFCD33ABE2BB8",
+				PolicyId: "56B042862350ADD2",
 				EmployeeEmail: "abhishiek@clevertapdemo.ml",
 				ManagerEmail: "shubham@clevertapdemo.ml",
 				EmployeeId: "1003",
@@ -62,7 +62,7 @@ func TestExpensifyClient_NewEmployee(t *testing.T) {
 			employeesList: &EmployeesList{
 				Employees: []Employee{
 					{
-						PolicyId: "E95AFCD33ABE2BB8",
+						PolicyId: "56B042862350ADD2",
 						EmployeeEmail: "abhishiek@clevertapdemo.ml",
 						ManagerEmail: "shubham@clevertapdemo.ml",
 						EmployeeId: "1003",
@@ -121,12 +121,12 @@ func TestExpensifyClient_GetEmployee(t *testing.T) {
 		{
 			testName: "employee exists",
 			employee: &Employee{
-				PolicyId: "E95AFCD33ABE2BB8",
+				PolicyId: "56B042862350ADD2",
 				EmployeeEmail: "abhishiek@clevertapdemo.ml",
 			},
 			expectErr: false,
 			expectedResp: &Employee{
-				PolicyId: "E95AFCD33ABE2BB8",
+				PolicyId: "56B042862350ADD2",
 				EmployeeEmail: "abhishiek@clevertapdemo.ml",
 				ManagerEmail: "shubham@clevertapdemo.ml",
 				EmployeeId: "1003",
@@ -136,7 +136,7 @@ func TestExpensifyClient_GetEmployee(t *testing.T) {
 		{
 			testName: "employee does not exist",
 			employee: &Employee{
-				PolicyId: "E95AFCD33ABE2BB8",
+				PolicyId: "56B042862350ADD2",
 				EmployeeEmail: "ashutosh@clevertapdemo.ml",
 			},
 			expectErr: true,
@@ -178,7 +178,7 @@ func TestExpensifyClient_UpdateEmployee(t *testing.T) {
 			employeesList: &EmployeesList{
 				Employees: []Employee{
 					{
-						PolicyId: "E95AFCD33ABE2BB8",
+						PolicyId: "56B042862350ADD2",
 						EmployeeEmail: "abhishiek@clevertapdemo.ml",
 						ManagerEmail: "shubham@clevertapdemo.ml",
 						EmployeeId: "1003",
@@ -188,7 +188,7 @@ func TestExpensifyClient_UpdateEmployee(t *testing.T) {
 				},
 			},
 			employee: &Employee{
-				PolicyId: "E95AFCD33ABE2BB8",
+				PolicyId: "56B042862350ADD2",
 				EmployeeEmail: "abhishiek@clevertapdemo.ml",
 				ManagerEmail: "shubham@clevertapdemo.ml",
 				EmployeeId: "1003",
@@ -201,7 +201,7 @@ func TestExpensifyClient_UpdateEmployee(t *testing.T) {
 			employeesList: &EmployeesList{
 				Employees: []Employee{
 					{
-						PolicyId: "E95AFCD33ABE2BB8",
+						PolicyId: "56B042862350ADD2",
 						EmployeeEmail: "ashutosh@clevertapdemo.ml",
 						ManagerEmail: "shubham@clevertapdemo.ml",
 						EmployeeId: "1002",
@@ -250,72 +250,6 @@ func TestExpensifyClient_UpdateEmployee(t *testing.T) {
 	}
 }
 
-func TestExpensifyClient_ActivateEmployee(t *testing.T) {
-	testCases := []struct{
-		testName string
-		employeesList *EmployeesList
-		employee *Employee
-		expectErr bool
-	}{
-		{
-			testName: "activate successful",
-			employeesList: &EmployeesList{
-				Employees: []Employee{
-					{
-						PolicyId: "E95AFCD33ABE2BB8",
-						EmployeeEmail: "abhishiek@clevertapdemo.ml",
-						ManagerEmail: "shubham@clevertapdemo.ml",
-						EmployeeId: "1003",
-						IsTerminated: false,
-					},
-				},
-			},
-			employee: &Employee{
-				PolicyId: "E95AFCD33ABE2BB8",
-				EmployeeEmail: "abhishiek@clevertapdemo.ml",
-				ManagerEmail: "shubham@clevertapdemo.ml",
-				EmployeeId: "1003",
-				Role: "user",
-			},
-			expectErr: false,
-		},
-		{
-			testName: "invalid policy id",
-			employeesList: &EmployeesList{
-				Employees: []Employee{
-					{
-						PolicyId: "E95AFCD33ABE2BB7",
-						EmployeeEmail: "ashutosh@clevertapdemo.ml",
-						ManagerEmail: "shubham@clevertapdemo.ml",
-						EmployeeId: "1002",
-						FirstName: "Ashutosh",
-						LastName: "Verma",
-					},
-				},
-			},
-			employee: nil,
-			expectErr: true,
-		},
-	}
-	for _, tc := range testCases {
-		t.Run(tc.testName, func(t *testing.T) {
-			apiClient := NewClient(os.Getenv("PARTNER_USER_ID"), os.Getenv("PARTNER_USER_SECRET"))
-			err := apiClient.ActivateEmployee(tc.employeesList)
-			if tc.expectErr {
-				assert.Error(t, err)
-				return
-			}
-			employee := Employee{
-				PolicyId: tc.employeesList.Employees[0].PolicyId,
-				EmployeeEmail: tc.employeesList.Employees[0].EmployeeEmail,
-			}
-			body, err := apiClient.GetEmployee(&employee)
-			assert.NoError(t, err)
-			assert.Equal(t, tc.employee, body)
-		})
-	}
-}
-
 func TestExpensifyClient_DeleteEmployee(t *testing.T) {
 	testCases := []struct{
 		testName string
@@ -327,7 +261,7 @@ func TestExpensifyClient_DeleteEmployee(t *testing.T) {
 			employeesList: &EmployeesList{
 				Employees: []Employee{
 					{
-						PolicyId: "E95AFCD33ABE2BB8",
+						PolicyId: "56B042862350ADD2",
 						EmployeeEmail: "abhishiek@clevertapdemo.ml",
 						ManagerEmail: "shubham@clevertapdemo.ml",
 						EmployeeId: "1003",
@@ -343,7 +277,7 @@ func TestExpensifyClient_DeleteEmployee(t *testing.T) {
 			employeesList: &EmployeesList{
 				Employees: []Employee{
 					{
-						PolicyId: "E95AFCD33ABE2BB8",
+						PolicyId: "56B042862350ADD2",
 						EmployeeEmail: "abhishiek@clevertapdemo.ml",
 						ManagerEmail: "shubham@clevertapdemo.ml",
 						EmployeeId: "1003",
@@ -403,7 +337,7 @@ func TestExpensifyClient_NewPolicy(t *testing.T) {
 			plan: "corporate",
 			expectErr: false,
 			expectedResp: &Policy{
-				Owner: "shubham@clevertapdemo.ml",
+				Owner: "shubhamj@clevertapdemo.ml",
 				PolicyName: "test create",
 				OutputCurrency: "USD",
 				Plan: "corporate",
@@ -448,12 +382,12 @@ func TestExpensifyClient_GetPolicy(t *testing.T) {
 		},
 		{
 			testName: "policy exist",
-			policyId: "E95AFCD33ABE2BB8",
+			policyId: "56B042862350ADD2",
 			expectErr: false,
 			expectedResp: &Policy{
-				PolicyId: "E95AFCD33ABE2BB8",
-				Owner: "shubham@clevertapdemo.ml",
-				PolicyName: "shubham",
+				PolicyId: "56B042862350ADD2",
+				Owner: "shubhamj@clevertapdemo.ml",
+				PolicyName: "shubhamj",
 				OutputCurrency: "INR",
 				Plan: "corporate",
 			},
@@ -469,107 +403,6 @@ func TestExpensifyClient_GetPolicy(t *testing.T) {
 			}
 			assert.NoError(t, err)
 			assert.Equal(t, tc.expectedResp, policy)
-		})
-	}
-}
-
-func TestExpensifyClient_UpdatePolicy(t *testing.T) {
-	testCases := []struct{
-		testName string
-		policyId string
-		categories Categories
-		reportField ReportFields
-		tags Tags
-		expectErr bool
-	}{
-		{
-			testName: "update categories",
-			policyId: "717B295F75DF888B",
-			categories: Categories{
-				Action: "merge",
-				DataArray: []CategoriesData{
-					{
-						Name: "Category 1",
-						Enabled: true,
-						PayrollCode: "Payroll Code 1",
-						GlCode: "GL Code 1",
-						CommentHint: "Comment hint 1",
-						AreCommentsRequired: true,
-						MaxExpenseAmount: 2500,
-					},
-					{
-						Name: "Category 2",
-						Enabled: false,
-					},
-				},
-			},
-			expectErr: false,
-		},
-		{
-			testName: "update report fields",
-			policyId: "717B295F75DF888B",
-			reportField: ReportFields{
-				Action: "merge",
-				DataArray: []ReportFieldsData{
-					{
-						Name: "Report field 1",
-						Type: "dropdown",
-						ValuesArray: []Values{
-							{
-								Value: "value 1",
-								ExternalId: "1",
-							},
-							{
-								Value: "value 2",
-								Enabled: false,
-							},
-							{
-								Value: "value 3",
-								ExternalId: "3",
-								Enabled: true,
-							},
-						},
-					},
-				},
-			},
-		},
-		{
-			testName: "update tags",
-			policyId: "717B295F75DF888B",
-			tags: Tags{
-				Source: "inline",
-				DataArray: []TagsData{
-                	{
-                    	Name: "Tag",
-                    	TagArray: []Tag{
-							{
-								Name: "Tag 1",
-								GlCode: "Tag 1 GL Code",
-							},
-							{
-								Name: "Tag 2",
-								Enabled: false,
-							},
-						},
-					},
-                },
-			},
-		},
-		{
-			testName: "policy does not exist",
-			policyId: "717B295F75DF888",
-			expectErr: true,
-		},
-	}
-	for _, tc := range testCases {
-		t.Run(tc.testName, func(t *testing.T) {
-			apiClient := NewClient(os.Getenv("PARTNER_USER_ID"), os.Getenv("PARTNER_USER_SECRET"))
-			err := apiClient.UpdatePolicy(tc.policyId, tc.categories, tc.reportField, tc.tags)
-			if tc.expectErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
 		})
 	}
 }

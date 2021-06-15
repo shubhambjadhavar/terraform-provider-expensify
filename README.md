@@ -75,7 +75,7 @@ resource "expensify_policy" "policy"{
 }
 
 data "expensify_policy" "policy" {
-	policy_id = "22E95AFCD33ABE2BB8"
+    policy_id = "22E95AFCD33ABE2BB8"
 }
 
 resource "expensify_user" "employee"{

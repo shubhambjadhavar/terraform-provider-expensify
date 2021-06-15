@@ -31,7 +31,7 @@ go mod tidy
 go mod vendor
 go build -o terraform-provider-expensify.exe
 ```
-2. Move the generated into `%APPDATA%/terraform.d/plugins/${host_name}/${namespace}/${type}/${version}/${OS_ARCH}`. For this, run the following commands: <br>  
+2. Move the generated binary to `%APPDATA%/terraform.d/plugins/${host_name}/${namespace}/${type}/${version}/${OS_ARCH}`. For this, run the following commands: <br>  
 ```
 mkdir -p %APPDATA%/terraform.d/plugins/expensify.com/employee/expensify/1.0.0/windows_amd64
 move terraform-provider-expensify.exe %APPDATA%\terraform.d\plugins\expensify.com\employee\expensify\1.0.0\windows_amd64

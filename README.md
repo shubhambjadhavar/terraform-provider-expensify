@@ -47,7 +47,7 @@ Create your Terraform configurations as shown in [example usage](#example-usage)
 ## Note
 
 * Update the fields `manager_email`, `approves_to`, `over_limit_approver`, and `approval_limit` only if Approval Mode for policy is Advanced Approval.<br>
-* API not allow to overwrite manually set values for `first_name` and `last_name` in their Expensify account.<br>
+* API not allow overwriting manually set values for `first_name` and `last_name` in their Expensify account.<br>
 * The fields `first_name` and `last_name` are set at account level.<br>
 * Once the value of any attribute is set, it cannot be set back to null through provider. But, you can set it to null via UI.<br> 
 

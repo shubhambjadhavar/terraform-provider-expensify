@@ -96,7 +96,6 @@ func resourceEmployeeCreate(ctx context.Context, d *schema.ResourceData, m inter
 	employees[0].EmployeeId = d.Get("employee_id").(string)
 	employees[0].ApprovalLimit = d.Get("approval_limit").(float64)
 	employees[0].OverLimitApprover = d.Get("over_limit_approver").(string)
-	employees[0].IsTerminated = d.Get("is_terminated").(bool)
 	employees[0].ApprovesTo = d.Get("approves_to").(string)
 	employeesList := client.EmployeesList{
 		Employees: employees,

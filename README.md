@@ -78,7 +78,7 @@ data "expensify_policy" "policy" {
     policy_id = "22E95AFCD33ABE2BB8"
 }
 
-resource "expensify_user" "employee"{
+resource "expensify_employee" "employee"{
     employee_email = "employee@domain.com"
     manager_email = "manager@domain.com"
     policy_id = "22E95AFCD33ABE2BB8"
@@ -90,7 +90,7 @@ resource "expensify_user" "employee"{
     over_limit_approver = "overlimitapprover@domain.com"
 }
 
-data "expensify_user" "employee" {
+data "expensify_employee" "employee" {
     policy_id = "22E95AFCD33ABE2BB8"
     employee_email = "employee@domain.com" 
 }

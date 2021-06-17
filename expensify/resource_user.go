@@ -154,7 +154,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		if strings.Contains(retryErr.Error(), "User Does Not Exist")==true {
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Warning,
-				Summary:  "Employee" + d.Id() +  "does not exist. Creating a new employee with given details.",
+				Summary:  "Employee " + d.Id() +  " does not exist. Creating a new employee with given details.",
 			})
 			d.SetId("")
 			return diags

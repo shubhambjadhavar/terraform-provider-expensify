@@ -7,9 +7,9 @@ import (
 	"terraform-provider-expensify/client"
 )
 
-func dataSourceEmployee() *schema.Resource{
+func dataSourceUser() *schema.Resource{
 	return &schema.Resource{
-		ReadContext: dataSourceEmployeeRead,
+		ReadContext: dataSourceUserRead,
 		Schema: map[string]*schema.Schema{
 			"policy_id": &schema.Schema{
 				Type: schema.TypeString,
@@ -48,7 +48,7 @@ func dataSourceEmployee() *schema.Resource{
 	}
 }
 
-func dataSourceEmployeeRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	apiClient := m.(*client.Client)
 	employee := client.Employee{

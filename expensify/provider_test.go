@@ -26,8 +26,8 @@ func init() {
 	if err!=nil {
 		log.Fatal(err)
 	}
-	os.Setenv("PARTNER_USER_ID", res["PARTNER_USER_ID"].(string))
-	os.Setenv("PARTNER_USER_SECRET", res["PARTNER_USER_SECRET"].(string))
+	os.Setenv("EXPENSIFY_USER_ID", res["EXPENSIFY_USER_ID"].(string))
+	os.Setenv("EXPENSIFY_USER_SECRET", res["EXPENSIFY_USER_SECRET"].(string))
 	testAccProvider = Provider()
 	testAccProviders = map[string]*schema.Provider{
 		"expensify": testAccProvider,
@@ -45,10 +45,10 @@ func TestExpensifyProvider_impl(t *testing.T)  {
 }
 
 func testAccExpensifyProviderPreCheck(t *testing.T) {
-	if v := os.Getenv("PARTNER_USER_ID"); v == "" {
-		t.Fatal("PARTNER_USER_ID must be set for acceptance tests")
+	if v := os.Getenv("EXPENSIFY_USER_ID"); v == "" {
+		t.Fatal("EXPENSIFY_USER_ID must be set for acceptance tests")
 	}
-	if v := os.Getenv("PARTNER_USER_SECRET"); v == "" {
-		t.Fatal("PARTNER_USER_SECRET must be set for acceptance tests")
+	if v := os.Getenv("EXPENSIFY_USER_SECRET"); v == "" {
+		t.Fatal("EXPENSIFY_USER_SECRET must be set for acceptance tests")
 	}
 }

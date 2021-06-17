@@ -467,6 +467,15 @@ func (c *Client) httpRequest(method string, body *strings.Reader) ([]byte, error
 	return respBody, nil
 }
 
+func (c *Client) IsRetry(err error) bool {
+	if err != nil {
+		if strings.Contains(err.Error(), "\"responseCode\":503")==true {
+			return true
+		}
+	}
+	return false
+}
+
 func (c *Client) requestPath() string {
 	return fmt.Sprintf("https://integrations.expensify.com/Integration-Server/ExpensifyIntegrations")
 }

@@ -2,11 +2,13 @@ package expensify
 
 import (
 	"fmt"
+	"time"
 	"regexp"
 	"context"
 	"strings"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"terraform-provider-expensify/client"
 )
 
@@ -20,14 +22,14 @@ func validateEmail(v interface{}, k string) (warns []string, errs []error) {
 	return
 }
 
-func resourceEmployee() *schema.Resource{
+func resourceUser() *schema.Resource{
 	return &schema.Resource{
-		CreateContext: resourceEmployeeCreate,
-		ReadContext:   resourceEmployeeRead,
-		UpdateContext: resourceEmployeeUpdate,
-		DeleteContext: resourceEmployeeDelete,
+		CreateContext: resourceUserCreate,
+		ReadContext:   resourceUserRead,
+		UpdateContext: resourceUserUpdate,
+		DeleteContext: resourceUserDelete,
 		Importer: &schema.ResourceImporter{
-			StateContext: resourceEmployeeImporter,
+			StateContext: resourceUserImporter,
 		},
 		Schema: map[string]*schema.Schema{
 			"employee_email": &schema.Schema{
@@ -37,7 +39,8 @@ func resourceEmployee() *schema.Resource{
 			},
 			"manager_email": &schema.Schema{
 				Type: schema.TypeString,
-				Required: true,
+				Optional: true,
+				Computed: true,
 				ValidateFunc: validateEmail,
 			},
 			"policy_id": &schema.Schema{
@@ -84,7 +87,7 @@ func resourceEmployee() *schema.Resource{
 	}
 }
 
-func resourceEmployeeCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
+func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
 	var diags diag.Diagnostics
 	apiClient := m.(*client.Client)
 	employees := make([]client.Employee, 1)
@@ -100,7 +103,20 @@ func resourceEmployeeCreate(ctx context.Context, d *schema.ResourceData, m inter
 	employeesList := client.EmployeesList{
 		Employees: employees,
 	}
-	err := apiClient.NewEmployee(&employeesList)
+	var err error
+	retryErr := resource.Retry(2*time.Minute, func() *resource.RetryError {
+		if err = apiClient.NewEmployee(&employeesList); err != nil {
+			if apiClient.IsRetry(err) {
+				return resource.RetryableError(err)
+			}
+			return resource.NonRetryableError(err)
+		}
+		return nil
+	})
+	if retryErr != nil {
+		time.Sleep(2 * time.Second)
+		return diag.FromErr(retryErr)
+	}
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -108,38 +124,47 @@ func resourceEmployeeCreate(ctx context.Context, d *schema.ResourceData, m inter
 	return diags
 }
 
-func resourceEmployeeRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
+func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
 	var diags diag.Diagnostics
 	apiClient := m.(*client.Client)
-	parts := resourceEmployeeParseId(d.Id())
+	parts := resourceUserParseId(d.Id())
 	employee := client.Employee{
 		EmployeeEmail: parts[1],
 		PolicyId: parts[0],
 	}
-	body, err := apiClient.GetEmployee(&employee)
-	if err!=nil{
-		if strings.Contains(err.Error(), "\"responseCode\":404")==true {
-			d.SetId("")
+	retryErr := resource.Retry(2*time.Minute, func() *resource.RetryError {
+		body, err := apiClient.GetEmployee(&employee)
+		if err != nil {
+			if apiClient.IsRetry(err) {
+				return resource.RetryableError(err)
+			}
+			return resource.NonRetryableError(err)
+		}
+		d.Set("employee_email", body.EmployeeEmail)
+		d.Set("manager_email", body.ManagerEmail)
+		d.Set("employee_id", body.EmployeeId)
+		d.Set("policy_id", body.PolicyId)
+		d.Set("approves_to", body.ApprovesTo)
+		d.Set("over_limit_approver", body.OverLimitApprover)
+		d.Set("approval_limit", body.ApprovalLimit)
+		d.Set("is_terminated", false)
+		return nil
+	})
+	if retryErr!=nil {
+		if strings.Contains(retryErr.Error(), "User Does Not Exist")==true {
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Warning,
-				Summary:  "Employee does not exist. Create a new employee with given details.",
+				Summary:  "Employee" + d.Id() +  "does not exist. Creating a new employee with given details.",
 			})
+			d.SetId("")
 			return diags
 		}
-		return diag.FromErr(err)
+		return diag.FromErr(retryErr)
 	}
-	d.Set("employee_email", body.EmployeeEmail)
-	d.Set("manager_email", body.ManagerEmail)
-	d.Set("employee_id", body.EmployeeId)
-	d.Set("policy_id", body.PolicyId)
-	d.Set("approves_to", body.ApprovesTo)
-	d.Set("over_limit_approver", body.OverLimitApprover)
-	d.Set("approval_limit", body.ApprovalLimit)
-	d.Set("is_terminated", false)
 	return diags
 }
 
-func resourceEmployeeUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
+func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
 	var diags diag.Diagnostics
 	apiClient := m.(*client.Client)
 	if d.HasChange("employee_email") {
@@ -159,7 +184,7 @@ func resourceEmployeeUpdate(ctx context.Context, d *schema.ResourceData, m inter
 	if diags.HasError() {
 		return diags
 	}
-	parts := resourceEmployeeParseId(d.Id())
+	parts := resourceUserParseId(d.Id())
 	employees := make([]client.Employee, 1)
 	employees[0].EmployeeEmail = parts[1]
 	employees[0].ManagerEmail = d.Get("manager_email").(string)
@@ -173,17 +198,30 @@ func resourceEmployeeUpdate(ctx context.Context, d *schema.ResourceData, m inter
 	employeesList := client.EmployeesList{
 		Employees: employees,
 	}
-	err := apiClient.UpdateEmployee(&employeesList)
+	var err error
+	retryErr := resource.Retry(2*time.Minute, func() *resource.RetryError {
+		if err = apiClient.UpdateEmployee(&employeesList); err != nil {
+			if apiClient.IsRetry(err) {
+				return resource.RetryableError(err)
+			}
+			return resource.NonRetryableError(err)
+		}
+		return nil
+	})
+	if retryErr != nil {
+		time.Sleep(2 * time.Second)
+		return diag.FromErr(retryErr)
+	}
 	if err != nil {
 		return diag.FromErr(err)
 	}
 	return diags
 }
 
-func resourceEmployeeDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
+func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
 	var diags diag.Diagnostics
 	apiClient := m.(*client.Client)
-	parts := resourceEmployeeParseId(d.Id())
+	parts := resourceUserParseId(d.Id())
 	employees := make([]client.Employee, 1)
 	employees[0].EmployeeEmail = parts[1]
 	employees[0].PolicyId = parts[0]
@@ -191,7 +229,20 @@ func resourceEmployeeDelete(ctx context.Context, d *schema.ResourceData, m inter
 	employeesList := client.EmployeesList{
 		Employees: employees,
 	}
-	err := apiClient.DeleteEmployee(&employeesList)
+	var err error
+	retryErr := resource.Retry(2*time.Minute, func() *resource.RetryError {
+		if err = apiClient.DeleteEmployee(&employeesList); err != nil {
+			if apiClient.IsRetry(err) {
+				return resource.RetryableError(err)
+			}
+			return resource.NonRetryableError(err)
+		}
+		return nil
+	})
+	if retryErr != nil {
+		time.Sleep(2 * time.Second)
+		return diag.FromErr(retryErr)
+	}
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -199,9 +250,9 @@ func resourceEmployeeDelete(ctx context.Context, d *schema.ResourceData, m inter
 	return diags
 }
 
-func resourceEmployeeImporter(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+func resourceUserImporter(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
 	apiClient := m.(*client.Client)
-	parts := resourceEmployeeParseId(d.Id())
+	parts := resourceUserParseId(d.Id())
 	employee := client.Employee{
 		EmployeeEmail: parts[1],
 		PolicyId: parts[0],
@@ -221,7 +272,7 @@ func resourceEmployeeImporter(ctx context.Context, d *schema.ResourceData, m int
 	return []*schema.ResourceData{d}, nil
 }
 
-func resourceEmployeeParseId(id string) ([]string) {
+func resourceUserParseId(id string) ([]string) {
 	parts := strings.Split(id, ":")
   	return parts
 }

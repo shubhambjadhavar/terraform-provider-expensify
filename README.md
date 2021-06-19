@@ -13,7 +13,7 @@ This Expensify provider allows Terraform to add users to the Expensify policies,
 
 ## API Authentication
 
-*Generate credentials using policy's admin accounts*
+*Generate credentials from account which is domain and policy admin*
 1. To authenticate API, we need a pair of credentials: partnerUserID and partnerUserSecret.<br>
 2. For this, go to https://www.expensify.com/tools/integrations/ and generate the credentials.<br>
 3. A pair of credentials: partnerUserID and partnerUserSecret will be generated and shown on the page.<br>

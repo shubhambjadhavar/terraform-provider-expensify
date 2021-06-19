@@ -1,9 +1,11 @@
 package expensify
 
 import(
+	"time"
 	"context"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"terraform-provider-expensify/client"
 )
 
@@ -39,15 +41,24 @@ func dataSourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interfa
 	var diags diag.Diagnostics
 	apiClient := m.(*client.Client)
 	policyId := d.Get("policy_id").(string)
-	policy, err := apiClient.GetPolicy(policyId)
-	if err != nil {
-		return diag.FromErr(err)
+	retryErr := resource.Retry(2*time.Minute, func() *resource.RetryError {
+		policy, err := apiClient.GetPolicy(policyId)
+		if err != nil {
+			if apiClient.IsRetry(err) {
+				return resource.RetryableError(err)
+			}
+			return resource.NonRetryableError(err)
+		}
+		d.Set("owner", policy.Owner)
+		d.Set("policy_id", policy.PolicyId)
+		d.Set("policy_name", policy.PolicyName)
+		d.Set("plan", policy.Plan)
+		d.Set("output_currency", policy.OutputCurrency)
+		d.SetId(policyId)
+		return nil
+	})
+	if retryErr!=nil {
+		return diag.FromErr(retryErr)
 	}
-	d.Set("owner", policy.Owner)
-	d.Set("policy_id", policy.PolicyId)
-	d.Set("policy_name", policy.PolicyName)
-	d.Set("plan", policy.Plan)
-	d.Set("output_currency", policy.OutputCurrency)
-	d.SetId(policyId)
 	return diags
 }

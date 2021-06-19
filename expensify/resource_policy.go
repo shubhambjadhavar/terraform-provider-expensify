@@ -2,10 +2,12 @@ package expensify
 
 import (
 	"fmt"
+	"time"
 	"strings"
 	"context"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"terraform-provider-expensify/client"
 )
 
@@ -63,11 +65,21 @@ func resourcePolicyCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	apiClient := m.(*client.Client)
 	policyName := d.Get("policy_name").(string)
 	plan := d.Get("plan").(string)
-	policyId, err := apiClient.NewPolicy(policyName, plan)
-	if err != nil {
-		return diag.FromErr(err)
+	retryErr := resource.Retry(2*time.Minute, func() *resource.RetryError {
+		policyId, err := apiClient.NewPolicy(policyName, plan)
+		if err != nil {
+			if apiClient.IsRetry(err) {
+				return resource.RetryableError(err)
+			}
+			return resource.NonRetryableError(err)
+		}
+		d.SetId(policyId)
+		return nil
+	})
+	if retryErr != nil {
+		time.Sleep(2 * time.Second)
+		return diag.FromErr(retryErr)
 	}
-	d.SetId(policyId)
 	return diags
 }
 
@@ -75,23 +87,28 @@ func resourcePolicyRead(ctx context.Context, d *schema.ResourceData, m interface
 	var diags diag.Diagnostics
 	apiClient := m.(*client.Client)
 	policyId := d.Id()
-	policy, err := apiClient.GetPolicy(policyId)
-	if err != nil {
-		if strings.Contains(err.Error(), "not exist") {
+	retryErr := resource.Retry(2*time.Minute, func() *resource.RetryError {
+		policy, err := apiClient.GetPolicy(policyId)
+		if err != nil {
+			if apiClient.IsRetry(err) {
+				return resource.RetryableError(err)
+			}
+			return resource.NonRetryableError(err)
+		}
+		d.Set("owner", policy.Owner)
+		d.Set("policy_id", policy.PolicyId)
+		d.Set("policy_name", policy.PolicyName)
+		d.Set("plan", policy.Plan)
+		d.Set("output_currency", policy.OutputCurrency)
+		return nil
+	})
+	if retryErr!=nil {
+		if strings.Contains(retryErr.Error(), "not exist")==true {
 			d.SetId("")
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Warning,
-				Summary:  "Policy does not exist. Create a new policy with given details.",
-			})
 			return diags
 		}
-		return diag.FromErr(err)
-	}
-	d.Set("owner", policy.Owner)
-	d.Set("policy_id", policy.PolicyId)
-	d.Set("policy_name", policy.PolicyName)
-	d.Set("plan", policy.Plan)
-	d.Set("output_currency", policy.OutputCurrency)
+		return diag.FromErr(retryErr)
+	}	
 	return diags
 }
 

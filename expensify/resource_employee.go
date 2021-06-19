@@ -22,14 +22,14 @@ func validateEmail(v interface{}, k string) (warns []string, errs []error) {
 	return
 }
 
-func resourceUser() *schema.Resource{
+func resourceEmployee() *schema.Resource{
 	return &schema.Resource{
-		CreateContext: resourceUserCreate,
-		ReadContext:   resourceUserRead,
-		UpdateContext: resourceUserUpdate,
-		DeleteContext: resourceUserDelete,
+		CreateContext: resourceEmployeeCreate,
+		ReadContext:   resourceEmployeeRead,
+		UpdateContext: resourceEmployeeUpdate,
+		DeleteContext: resourceEmployeeDelete,
 		Importer: &schema.ResourceImporter{
-			StateContext: resourceUserImporter,
+			StateContext: resourceEmployeeImporter,
 		},
 		Schema: map[string]*schema.Schema{
 			"employee_email": &schema.Schema{
@@ -87,7 +87,7 @@ func resourceUser() *schema.Resource{
 	}
 }
 
-func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
+func resourceEmployeeCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
 	var diags diag.Diagnostics
 	apiClient := m.(*client.Client)
 	employees := make([]client.Employee, 1)
@@ -117,17 +117,14 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 		time.Sleep(2 * time.Second)
 		return diag.FromErr(retryErr)
 	}
-	if err != nil {
-		return diag.FromErr(err)
-	}
 	d.SetId(employeesList.Employees[0].PolicyId + ":" + employeesList.Employees[0].EmployeeEmail)
 	return diags
 }
 
-func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
+func resourceEmployeeRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
 	var diags diag.Diagnostics
 	apiClient := m.(*client.Client)
-	parts := resourceUserParseId(d.Id())
+	parts := resourceEmployeeParseId(d.Id())
 	employee := client.Employee{
 		EmployeeEmail: parts[1],
 		PolicyId: parts[0],
@@ -152,10 +149,6 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	})
 	if retryErr!=nil {
 		if strings.Contains(retryErr.Error(), "User Does Not Exist")==true {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Warning,
-				Summary:  "Employee " + d.Id() +  " does not exist. Creating a new employee with given details.",
-			})
 			d.SetId("")
 			return diags
 		}
@@ -164,7 +157,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	return diags
 }
 
-func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
+func resourceEmployeeUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
 	var diags diag.Diagnostics
 	apiClient := m.(*client.Client)
 	if d.HasChange("employee_email") {
@@ -184,7 +177,7 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	if diags.HasError() {
 		return diags
 	}
-	parts := resourceUserParseId(d.Id())
+	parts := resourceEmployeeParseId(d.Id())
 	employees := make([]client.Employee, 1)
 	employees[0].EmployeeEmail = parts[1]
 	employees[0].ManagerEmail = d.Get("manager_email").(string)
@@ -212,16 +205,13 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 		time.Sleep(2 * time.Second)
 		return diag.FromErr(retryErr)
 	}
-	if err != nil {
-		return diag.FromErr(err)
-	}
 	return diags
 }
 
-func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
+func resourceEmployeeDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics{
 	var diags diag.Diagnostics
 	apiClient := m.(*client.Client)
-	parts := resourceUserParseId(d.Id())
+	parts := resourceEmployeeParseId(d.Id())
 	employees := make([]client.Employee, 1)
 	employees[0].EmployeeEmail = parts[1]
 	employees[0].PolicyId = parts[0]
@@ -243,16 +233,13 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface
 		time.Sleep(2 * time.Second)
 		return diag.FromErr(retryErr)
 	}
-	if err != nil {
-		return diag.FromErr(err)
-	}
 	d.SetId("")
 	return diags
 }
 
-func resourceUserImporter(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+func resourceEmployeeImporter(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
 	apiClient := m.(*client.Client)
-	parts := resourceUserParseId(d.Id())
+	parts := resourceEmployeeParseId(d.Id())
 	employee := client.Employee{
 		EmployeeEmail: parts[1],
 		PolicyId: parts[0],
@@ -272,7 +259,7 @@ func resourceUserImporter(ctx context.Context, d *schema.ResourceData, m interfa
 	return []*schema.ResourceData{d}, nil
 }
 
-func resourceUserParseId(id string) ([]string) {
+func resourceEmployeeParseId(id string) ([]string) {
 	parts := strings.Split(id, ":")
   	return parts
 }

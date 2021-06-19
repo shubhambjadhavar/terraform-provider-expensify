@@ -23,8 +23,8 @@ func init(){
 	if err!=nil {
 		log.Fatal(err)
 	}
-	os.Setenv("EXPENSIFY_USER_ID", res["EXPENSIFY_USER_ID"].(string))
-	os.Setenv("EXPENSIFY_USER_SECRET", res["EXPENSIFY_USER_SECRET"].(string))
+	os.Setenv("EXPENSIFY_PARTNER_USER_ID", res["EXPENSIFY_PARTNER_USER_ID"].(string))
+	os.Setenv("EXPENSIFY_PARTNER_USER_SECRET", res["EXPENSIFY_PARTNER_USER_SECRET"].(string))
 }
 
 func TestExpensifyClient_NewEmployee(t *testing.T) {
@@ -94,7 +94,7 @@ func TestExpensifyClient_NewEmployee(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.testName, func(t *testing.T) {
-			apiClient := NewClient(os.Getenv("EXPENSIFY_USER_ID"), os.Getenv("EXPENSIFY_USER_SECRET"))
+			apiClient := NewClient(os.Getenv("EXPENSIFY_PARTNER_USER_ID"), os.Getenv("EXPENSIFY_PARTNER_USER_SECRET"))
 			err := apiClient.NewEmployee(tc.employeesList)
 			if tc.expectErr {
 				assert.Error(t, err)
@@ -154,7 +154,7 @@ func TestExpensifyClient_GetEmployee(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.testName, func(t *testing.T) {
-			apiClient := NewClient(os.Getenv("EXPENSIFY_USER_ID"), os.Getenv("EXPENSIFY_USER_SECRET"))
+			apiClient := NewClient(os.Getenv("EXPENSIFY_PARTNER_USER_ID"), os.Getenv("EXPENSIFY_PARTNER_USER_SECRET"))
 			body, err := apiClient.GetEmployee(tc.employee)
 			if tc.expectErr {
 				assert.Error(t, err)
@@ -233,7 +233,7 @@ func TestExpensifyClient_UpdateEmployee(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.testName, func(t *testing.T) {
-			apiClient := NewClient(os.Getenv("EXPENSIFY_USER_ID"), os.Getenv("EXPENSIFY_USER_SECRET"))
+			apiClient := NewClient(os.Getenv("EXPENSIFY_PARTNER_USER_ID"), os.Getenv("EXPENSIFY_PARTNER_USER_SECRET"))
 			err := apiClient.UpdateEmployee(tc.employeesList)
 			if tc.expectErr {
 				assert.Error(t, err)
@@ -307,7 +307,7 @@ func TestExpensifyClient_DeleteEmployee(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.testName, func(t *testing.T) {
-			apiClient := NewClient(os.Getenv("EXPENSIFY_USER_ID"), os.Getenv("EXPENSIFY_USER_SECRET"))
+			apiClient := NewClient(os.Getenv("EXPENSIFY_PARTNER_USER_ID"), os.Getenv("EXPENSIFY_PARTNER_USER_SECRET"))
 			err := apiClient.DeleteEmployee(tc.employeesList)
 			if tc.expectErr {
 				assert.Error(t, err)
@@ -353,7 +353,7 @@ func TestExpensifyClient_NewPolicy(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.testName, func(t *testing.T) {
-			apiClient := NewClient(os.Getenv("EXPENSIFY_USER_ID"), os.Getenv("EXPENSIFY_USER_SECRET"))
+			apiClient := NewClient(os.Getenv("EXPENSIFY_PARTNER_USER_ID"), os.Getenv("EXPENSIFY_PARTNER_USER_SECRET"))
 			policyId, err := apiClient.NewPolicy(tc.policyName, tc.plan)
 			if tc.expectErr {
 				assert.Error(t, err)
@@ -395,7 +395,7 @@ func TestExpensifyClient_GetPolicy(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.testName, func(t *testing.T) {
-			apiClient := NewClient(os.Getenv("EXPENSIFY_USER_ID"), os.Getenv("EXPENSIFY_USER_SECRET"))
+			apiClient := NewClient(os.Getenv("EXPENSIFY_PARTNER_USER_ID"), os.Getenv("EXPENSIFY_PARTNER_USER_SECRET"))
 			policy, err := apiClient.GetPolicy(tc.policyId)
 			if tc.expectErr {
 				assert.Error(t, err)

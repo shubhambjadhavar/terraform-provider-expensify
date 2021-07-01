@@ -14,7 +14,7 @@ Provides a resource to create and manage a Expensify policy users.<br>
 ## Example Usage
 
 ```
-resource "expensify_user" "employee"{
+resource "expensify_employee" "employee"{
     employee_email = "employee@domain.com"
     manager_email = "manager@domain.com"
     policy_id = "22E95AFCD33ABE2BB8"

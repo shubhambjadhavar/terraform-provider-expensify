@@ -1,4 +1,4 @@
-# expensify_employee
+# expensify_policy
 
 Reads attributes of a Expensify policy.
 
